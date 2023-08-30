@@ -30,7 +30,8 @@ flush(conarduino)
 while (Sys.time() < stoptime) {
   tmp=read.serialConnection(conarduino)
   count=calcdist2(tmp)
-  totaldf = rbind(totaldf,count)
+  retval = data.frame(obs=count,ts=Sys.time())
+  totaldf = rbind(totaldf,retval)
   flush(conarduino)
   Sys.sleep(5)
 }
@@ -43,14 +44,17 @@ calcdist2 <- function(rawin) {
   ts = Sys.time()
   retval = data.frame(obs=v,time=ts)
   #brutlist=sort(abs(unique(diff(v))))
+  log_print(ts)
   log_print(retval)
   #retval=sum(brutlist > difflimit)
   #print(v)
   ##return(round(retval/2))
-  return(retval)
+  return(v)
 }
 
 log_close()
+plot(x=totaldf$ts,y=totaldf$obs, type="l")
+
 
 calcdist <- function(rawin) {
   retval=0L
